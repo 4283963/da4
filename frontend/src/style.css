@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #0b0f14;
+  color: #e8edf3;
+  font-family: "Sora", system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f14;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a3445;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff7a1a;
+}
+
+@layer components {
+  .panel {
+    @apply bg-base-panel border border-base-border rounded-md shadow-panel;
+  }
+  .panel-elevated {
+    @apply bg-base-elevated border border-base-border rounded-md;
+  }
+  .label-cap {
+    @apply font-mono text-[10px] uppercase tracking-[0.22em] text-ink-faint;
+  }
+  .field-input {
+    @apply w-full bg-base-elevated border border-base-border rounded px-3 py-2 font-mono text-sm text-ink outline-none transition focus:border-amber focus:ring-1 focus:ring-amber/40;
+  }
+  .field-select {
+    @apply field-input appearance-none cursor-pointer;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded font-display text-sm uppercase tracking-wider transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-amber text-black hover:shadow-glow;
+  }
+  .btn-ghost {
+    @apply btn border border-base-border text-ink-muted hover:text-ink hover:border-amber/60;
+  }
+  .btn-danger {
+    @apply btn border border-danger/40 text-danger hover:bg-danger/10;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm font-mono text-[10px] uppercase tracking-wider;
+  }
+}
+
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(54, 214, 231, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(54, 214, 231, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.noise-texture {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 12px rgba(255, 122, 26, 0.55);
+}
