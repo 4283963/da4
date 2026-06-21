@@ -86,3 +86,32 @@ body {
 .text-glow-amber {
   text-shadow: 0 0 12px rgba(255, 122, 26, 0.55);
 }
+
+.text-glow-danger {
+  text-shadow: 0 0 12px rgba(255, 59, 59, 0.7);
+}
+
+@keyframes alarmFlicker {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 22px rgba(255, 59, 59, 0.5);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 36px rgba(255, 59, 59, 0.9);
+  }
+}
+
+.alarm-flicker {
+  animation: alarmFlicker 0.9s ease-in-out infinite;
+}
+
+.alarm-pop-enter-active,
+.alarm-pop-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.alarm-pop-enter-from,
+.alarm-pop-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}

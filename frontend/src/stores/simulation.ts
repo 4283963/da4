@@ -24,6 +24,7 @@ interface SimState {
   partLength: number
   partRadius: number
   wear: WearResponse
+  alarm: boolean
   loadedToolId: number | null
   loadedParamId: number | null
   backendError: string | null
@@ -49,6 +50,7 @@ const state = reactive<SimState>({
   partLength: 120,
   partRadius: 28,
   wear: { wear_value: 0, wear_percent: 0, status: 'normal' },
+  alarm: false,
   loadedToolId: null,
   loadedParamId: null,
   backendError: null,
@@ -65,6 +67,13 @@ function localWear(t: number, p: SimParams): WearResponse {
   }
 }
 
+function computeAlarm(): void {
+  const PROXIMITY_DANGER_RATIO = 0.18
+  const proximityDanger = state.params.depthOfCut >= state.partRadius * PROXIMITY_DANGER_RATIO
+  const timeDanger = state.wear.status === 'critical'
+  state.alarm = proximityDanger || timeDanger
+}
+
 async function refreshWear(): Promise<void> {
   try {
     const res = await estimateWear({
@@ -79,6 +88,7 @@ async function refreshWear(): Promise<void> {
     state.wear = localWear(state.cuttingTime, state.params)
     state.backendError = (e as Error).message
   }
+  computeAlarm()
 }
 
 function tick(dt: number): void {
@@ -94,6 +104,7 @@ function tick(dt: number): void {
     state.finished = true
     void refreshWear()
   }
+  computeAlarm()
 }
 
 function start(): void {
@@ -113,6 +124,7 @@ function reset(): void {
   state.feedPosition = 0
   state.wear = { wear_value: 0, wear_percent: 0, status: 'normal' }
   state.backendError = null
+  computeAlarm()
 }
 
 function applyTool(tool: Tool): void {
@@ -135,6 +147,7 @@ function applyParam(cp: CuttingParam): void {
 
 function setParam<K extends keyof SimParams>(key: K, value: SimParams[K]): void {
   state.params[key] = value
+  computeAlarm()
 }
 
 export function useSimulationStore() {
@@ -143,6 +156,7 @@ export function useSimulationStore() {
     isRunning: computed(() => state.running),
     isFinished: computed(() => state.finished),
     wearStatus: computed(() => state.wear.status),
+    isAlarm: computed(() => state.alarm),
     start,
     pause,
     reset,

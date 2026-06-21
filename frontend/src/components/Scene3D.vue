@@ -264,17 +264,31 @@ function animate(): void {
   toolGroup.position.set(feedX, cutY, 0)
 
   tipLight.position.set(feedX, cutY + 0.6, 0)
-  tipLight.intensity = running ? 2.4 : 0
-  tipLight.color.setHex(state.wear.status === 'critical' ? 0xff3b3b : 0xff7a1a)
-
-  const t = state.wear.wear_percent / 100
-  const col = new THREE.Color()
-  if (t < 0.5) col.copy(colFresh).lerp(colMid, t / 0.5)
-  else col.copy(colMid).lerp(colCrit, (t - 0.5) / 0.5)
-  insertMat.color.copy(col)
-  insertMat.emissive.copy(col).multiplyScalar(0.4 + t * 0.9)
-  const sc = 1 - t * 0.12
-  insert.scale.set(sc, 1, sc)
+  const shankMatRef = shank.material as THREE.MeshStandardMaterial
+  if (state.alarm) {
+    const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.012)
+    tipLight.color.setHex(0xff3b3b)
+    tipLight.intensity = 1.6 + pulse * 2.6
+    insertMat.color.copy(colCrit)
+    insertMat.emissive.copy(colCrit).multiplyScalar(0.7 + pulse * 1.2)
+    shankMatRef.color.setHex(0x7a1f1f)
+    shankMatRef.emissive.setHex(0x2a0606)
+    const sc = 1 - (state.wear.wear_percent / 100) * 0.12
+    insert.scale.set(sc * (1 + pulse * 0.05), 1, sc * (1 + pulse * 0.05))
+  } else {
+    tipLight.intensity = running ? 2.4 : 0
+    tipLight.color.setHex(state.wear.status === 'critical' ? 0xff3b3b : 0xff7a1a)
+    const t = state.wear.wear_percent / 100
+    const col = new THREE.Color()
+    if (t < 0.5) col.copy(colFresh).lerp(colMid, t / 0.5)
+    else col.copy(colMid).lerp(colCrit, (t - 0.5) / 0.5)
+    insertMat.color.copy(col)
+    insertMat.emissive.copy(col).multiplyScalar(0.4 + t * 0.9)
+    shankMatRef.color.setHex(0x2a313c)
+    shankMatRef.emissive.setHex(0x000000)
+    const sc = 1 - t * 0.12
+    insert.scale.set(sc, 1, sc)
+  }
 
   const gp = state.feedPosition * U
   groove.scale.x = Math.max(0.0001, gp)
