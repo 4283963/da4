@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { useSimulationStore } from '@/stores/simulation'
+
+// 兜底：把 THREE 暴露到全局，避免 examples/addons 内部兼容性代码报 "THREE is not defined"
+;(window as any).THREE = THREE
 
 const U = 0.1
 const MAX_SPARKS = 240
